@@ -12,6 +12,16 @@ end_time = 1
 time_points = np.arange(0, end_time + time_interval, time_interval)
 
 #Iznput
+# input_data = pd.DataFrame({
+#     "time": time_points,
+#     "LaunchX": 200,
+#     "LaunchY": 50,
+#     "LaunchZ": 1800,
+#     "LaunchAngle": 40,
+#     "LaunchDirection": 15,
+#     "InitialV": 100
+# })
+
 input_data = pd.DataFrame({
     "time": time_points,
     "LaunchX": 200,
