@@ -6,10 +6,22 @@ import pickle
 with open('trained_model.pkl', 'rb') as file:
     gbm = pickle.load(file)
 
-time_interval = 0.01
-end_time = 2
+# time_interval = 0.01
+# end_time = 2
 
-time_points = np.arange(0, end_time + time_interval, time_interval)
+#time_points = np.arange(0, end_time + time_interval, time_interval)
+time=[]
+i=0
+flag=2
+endTime=1.9
+while i < endTime:
+    if flag%3==0:
+        i+=0.04
+    else:
+        i+=0.03
+    flag+=1
+    time.append(i)
+time_points=np.array(time)
 
 #Iznput
 # input_data = pd.DataFrame({
