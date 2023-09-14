@@ -8,12 +8,19 @@ x = dataset["x"]
 y = dataset["y"]
 z = dataset["z"]
 
+fromModel= pd.read_excel("predicted_trajectories_combined.xlsx")
+modelX=fromModel["LocationX"]
+modelY=fromModel["LocationY"]
+modelZ=fromModel["LocationZ"]
+
 # Create a 3D scatter plot
 fig = plt.figure()
 ax = fig.add_subplot(111, projection='3d')
 
 # Scatter plot
 ax.scatter(x, y, z, c='b', marker='o')
+ax.scatter(modelX, modelY, modelZ, c='r', marker='o')
+
 
 # Set labels for the axes
 ax.set_xlabel('X Label')

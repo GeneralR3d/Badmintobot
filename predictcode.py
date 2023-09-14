@@ -4,7 +4,7 @@ import pickle
 import math
 
 # Load the trained model
-with open('trained_model.pkl', 'rb') as file:
+with open('trained_modelZ.pkl', 'rb') as file:
     gbm = pickle.load(file)
 
 time_interval = 0.01
@@ -41,12 +41,12 @@ visionTraj=pd.read_excel("Vision Trajectory2.xlsx")
 # X is wrt width of court
 # Y is wrt length of court
 # Z is wrt height of court
-LaunchX= visionTraj["x"][0]
-LaunchY= visionTraj["y"][0]
-LaunchZ= visionTraj["z"][0]
-changeX= visionTraj["x"][1]-visionTraj["x"][0]
-changeY= visionTraj["y"][1]-visionTraj["y"][0]
-changeZ= visionTraj["z"][1]-visionTraj["z"][0]
+LaunchX= visionTraj["x"][0] * 10
+LaunchY= visionTraj["y"][0] * 10
+LaunchZ= visionTraj["z"][0] * 10
+changeX= (visionTraj["x"][1]-visionTraj["x"][0]) *10
+changeY= (visionTraj["y"][1]-visionTraj["y"][0]) *10
+changeZ= (visionTraj["z"][1]-visionTraj["z"][0]) *10
 
 input_data = pd.DataFrame({
     "time": time_points,
@@ -59,10 +59,10 @@ input_data = pd.DataFrame({
     "LaunchDirection": math.atan((changeX)/(math.sqrt(changeY**2 + changeZ**2))) * (180/math.pi),
         #calculate from arctan(opp/adj) which is arctan(change in x/change in yandz) which is arctan( changex/sqrt(changey^2 + changez^2)
         #calculated from a rotation around the z-axis
-    "InitialV": 
+    "InitialV": (math.sqrt(changeX**2 + changeY**2 + changeZ**2)/0.03)/1000
         #calcuate from change in the 3d position over change in time period
         #recall velocity is a vector so the initialV can only be length of that vector
-        #vector is a 
+        #vector is a difference in all 3 coordinates
 })
 
 
@@ -71,10 +71,10 @@ y_pred_gbm = gbm.predict(input_data)
 # Output the predicted data
 predicted_data = pd.DataFrame({
     "time": input_data["time"],
-    "LocationX": y_pred_gbm
+    "LocationZ": y_pred_gbm
 })
 
-predicted_data.to_excel("predicted_trajectories.xlsx", index=False)
+predicted_data.to_excel("predicted_trajectoriesZ.xlsx", index=False)
 #existing_data = pd.read_excel("predicted_trajectories.xlsx")
 
 #existing_data['LocationY'] = y_pred_gbm
