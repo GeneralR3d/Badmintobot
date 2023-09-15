@@ -4,10 +4,10 @@ import pickle
 import math
 
 # Load the trained model
-with open('trained_modelZ.pkl', 'rb') as file:
+with open('trained_modelY.pkl', 'rb') as file:
     gbm = pickle.load(file)
 
-time_interval = 0.01
+time_interval = 1/30
 end_time = 2
 
 time_points = np.arange(0, end_time + time_interval, time_interval)
@@ -50,13 +50,13 @@ changeZ= (visionTraj["z"][1]-visionTraj["z"][0]) *10
 
 input_data = pd.DataFrame({
     "time": time_points,
-    "LaunchX": LaunchX, #note these can be swapped cos in the trained model X is wrt to court
-    "LaunchY": LaunchY,
+    "LaunchX": LaunchY, #note these can be swapped cos in the trained model X is wrt to court
+    "LaunchY": LaunchX,
     "LaunchZ": LaunchZ,
     "LaunchAngle": math.atan((changeZ)/(math.sqrt(changeX**2 + changeY**2))) * (180/math.pi),
       #calculate from arctan(opp/adj) which is arctan(changez/change in xandy) which is arctan(changez/sqrt(changex^2 + changey^2))
       #essentially calculated from a rotation around the y-axis
-    "LaunchDirection": math.atan((changeX)/(math.sqrt(changeY**2 + changeZ**2))) * (180/math.pi),
+    "LaunchDirection": math.atan((changeY)/(math.sqrt(changeX**2 + changeZ**2))) * (180/math.pi),
         #calculate from arctan(opp/adj) which is arctan(change in x/change in yandz) which is arctan( changex/sqrt(changey^2 + changez^2)
         #calculated from a rotation around the z-axis
     "InitialV": (math.sqrt(changeX**2 + changeY**2 + changeZ**2)/0.03)/1000
@@ -71,10 +71,10 @@ y_pred_gbm = gbm.predict(input_data)
 # Output the predicted data
 predicted_data = pd.DataFrame({
     "time": input_data["time"],
-    "LocationZ": y_pred_gbm
+    "LocationY": y_pred_gbm
 })
 
-predicted_data.to_excel("predicted_trajectoriesZ.xlsx", index=False)
+predicted_data.to_excel("predicted_trajectoriesY.xlsx", index=False)
 #existing_data = pd.read_excel("predicted_trajectories.xlsx")
 
 #existing_data['LocationY'] = y_pred_gbm

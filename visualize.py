@@ -4,9 +4,9 @@ import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D
 
 dataset = pd.read_excel("Vision Trajectory2.xlsx")
-x = dataset["x"]
-y = dataset["y"]
-z = dataset["z"]
+x = dataset["y"]*10
+y = dataset["x"]*10
+z = dataset["z"]*10
 
 fromModel= pd.read_excel("predicted_trajectories_combined.xlsx")
 modelX=fromModel["LocationX"]
