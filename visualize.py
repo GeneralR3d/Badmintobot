@@ -3,32 +3,56 @@ import numpy as np
 import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D
 
-dataset = pd.read_excel("Vision Trajectory2.xlsx")
-x = dataset["y"]*10
-y = dataset["x"]*10
-z = dataset["z"]*10
+magicStartFrame = 26
 
-fromModel= pd.read_excel("predicted_trajectories_combined.xlsx")
-modelX=fromModel["LocationX"]
-modelY=fromModel["LocationY"]
-modelZ=fromModel["LocationZ"]
+
+dataset1 = pd.read_excel("testSet/Vision Trajectory3.xlsx",'forward6_scaled')
+# x = dataset["y"]
+# y = dataset["x"]
+# z = dataset["z"]
+
+# dataset1 = pd.read_excel("testSet/Vision Trajectory3.xlsx",'forward6_scaled')
+x1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["y"]
+y1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["x"]
+z1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["z"]
+
+#scale each array by 10 to convert to mm
+# x = x * 10
+# y = y * 10
+# z = z * 10
+x1*=10
+y1*=10
+z1*=10
+
+
+#read from predicted data
+modelX= pd.read_excel("output/predicted_trajectoriesX.xlsx")["LocationX"]
+modelY= pd.read_excel("output/predicted_trajectoriesY.xlsx")["LocationY"]
+modelZ= pd.read_excel("output/predicted_trajectoriesZ.xlsx")["LocationZ"]
 
 # Create a 3D scatter plot
 fig = plt.figure()
-ax = fig.add_subplot(111, projection='3d')
+ax = fig.add_subplot(projection='3d')
 
 # Scatter plot
-ax.scatter(x, y, z, c='b', marker='o')
-ax.scatter(modelX, modelY, modelZ, c='r', marker='o')
+#ax.scatter(x, y, z, c='b', marker='o',label='actual')
+ax.plot(x1, y1, z1, c='b', marker='o')
+# ax.scatter(x3, y3, z3, c='y', marker='o')
+ax.plot(modelX, modelY, modelZ, c='r', marker='o',label='predicted')
 
 
 # Set labels for the axes
-ax.set_xlabel('X Label')
-ax.set_ylabel('Y Label')
-ax.set_zlabel('Z Label')
+ax.set_xlabel('Length of court')
+ax.set_ylabel('Width of court')
+ax.set_zlabel('Height of court')
+
+#set the spacing
+ax.set_xlim(0, 14_000)
+ax.set_ylim(-3000, 3000)
+ax.set_zlim(0, 5000)
 
 # Set a title
-ax.set_title('3D Scatter Plot')
+ax.set_title('forward6_scaled')
 
 # Show the plot
 plt.show()

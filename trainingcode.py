@@ -8,13 +8,13 @@ import pickle
 data = pd.read_excel("dataset3.xlsx")
 
 def main():
-    with open('trained_modelX.pkl', 'wb') as file:
+    with open('models/trained_modelX.pkl', 'wb') as file:
         gbm=train("LocationX")
         pickle.dump(gbm, file)
-    with open('trained_modelY.pkl', 'wb') as file:
+    with open('models/trained_modelY.pkl', 'wb') as file:
         gbm=train("LocationY")
         pickle.dump(gbm, file)
-    with open('trained_modelY.pkl', 'wb') as file:
+    with open('models/trained_modelY.pkl', 'wb') as file:
         gbm=train("LocationZ")
         pickle.dump(gbm, file)
     
