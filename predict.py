@@ -8,11 +8,6 @@ end_time = 2
 
 time_points = np.arange(0, end_time + time_interval, time_interval)
 
-dataset = pd.read_excel("testSet/Vision Trajectory3.xlsx",'Trajectory 1')
-
-
-
-
 
 
 def main():
@@ -54,16 +49,6 @@ def main():
 
 
 
-#Iznput
-# input_data = pd.DataFrame({
-#     "time": time_points,
-#     "LaunchX": 200,
-#     "LaunchY": 50,
-#     "LaunchZ": 1800,
-#     "LaunchAngle": 40,
-#     "LaunchDirection": 15,
-#     "InitialV": 100
-# })
 def predictData(gbm):
 
     input_data = pd.DataFrame({
@@ -87,11 +72,5 @@ def predictData(gbm):
     
     return y_pred_gbm
 
-
-#existing_data = pd.read_excel("predicted_trajectories.xlsx")
-
-#existing_data['LocationY'] = y_pred_gbm
-
-#existing_data.to_excel("predicted_trajectories.xlsx", index=False)
 
 main()

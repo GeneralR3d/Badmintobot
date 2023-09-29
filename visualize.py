@@ -3,21 +3,24 @@ import numpy as np
 import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D
 
-# magicStartFrame = 26
+# read from test data
 
 
-
-dataset1 = pd.read_excel("testSet/Vision Trajectory3.xlsx",'forward7_scaled')
+'''With no magic frame'''
+#dataset1 = pd.read_excel("testSet/Vision Trajectory3.xlsx",'forward7_scaled')
 # x = dataset["y"]
 # y = dataset["x"]
 # z = dataset["z"]
 
+'''With magic frame for plotting points that are not yet fed into the ML model'''
+# magicStartFrame = 26
 # dataset1 = pd.read_excel("testSet/Vision Trajectory3.xlsx",'forward6_scaled')
 # x1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["y"]
 # y1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["x"]
 # z1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["z"]
 
-#scale each array by 10 to convert to mm
+
+# scale each array by 10 to convert to mm
 # x = x * 10
 # y = y * 10
 # z = z * 10
@@ -31,9 +34,9 @@ modelX= pd.read_excel("output/predicted_trajectoriesX.xlsx")["LocationX"]
 modelY= pd.read_excel("output/predicted_trajectoriesY.xlsx")["LocationY"]
 modelZ= pd.read_excel("output/predicted_trajectoriesZ.xlsx")["LocationZ"]
 
-modelX1= pd.read_excel("output/predicted_trajectoriesX1.xlsx")["LocationX"]
-modelY1= pd.read_excel("output/predicted_trajectoriesY1.xlsx")["LocationY"]
-modelZ1= pd.read_excel("output/predicted_trajectoriesZ1.xlsx")["LocationZ"]
+modelX0= pd.read_excel("output/predicted_trajectoriesX0.xlsx")["LocationX"]
+modelY0= pd.read_excel("output/predicted_trajectoriesY0.xlsx")["LocationY"]
+modelZ0= pd.read_excel("output/predicted_trajectoriesZ0.xlsx")["LocationZ"]
 
 # Create a 3D scatter plot
 fig = plt.figure()
@@ -44,7 +47,7 @@ ax = fig.add_subplot(projection='3d')
 #ax.plot(x1, y1, z1, c='b', marker='o')
 # ax.scatter(x3, y3, z3, c='y', marker='o')
 ax.plot(modelX, modelY, modelZ, c='r', marker='o',label='predicted')
-ax.plot(modelX1, modelY1, modelZ1, c='b', marker='o',label='predicted')
+ax.plot(modelX0, modelY0, modelZ0, c='b', marker='o',label='predicted')
 
 
 # Set labels for the axes
