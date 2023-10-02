@@ -7,10 +7,10 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 '''With no magic frame'''
-dataset = pd.read_excel("testSet/Vision Trajectory3.xlsx",'Trajectory 1')
-x = dataset["y"]
-y = dataset["x"]
-z = dataset["z"] - 190
+#dataset1 = pd.read_excel("testSet/Vision Trajectory3.xlsx",'forward7_scaled')
+# x = dataset["y"]
+# y = dataset["x"]
+# z = dataset["z"]
 
 '''With magic frame for plotting points that are not yet fed into the ML model'''
 # magicStartFrame = 26
@@ -21,9 +21,9 @@ z = dataset["z"] - 190
 
 
 # scale each array by 10 to convert to mm
-x = x * 10
-y = y * 10
-z = z * 10
+# x = x * 10
+# y = y * 10
+# z = z * 10
 # x1*=10
 # y1*=10
 # z1*=10
@@ -35,6 +35,10 @@ modelY= pd.read_excel("output/predicted_trajectoriesY.xlsx")["LocationY"]
 modelZ= pd.read_excel("output/predicted_trajectoriesZ.xlsx")["LocationZ"]
 
 
+modelX0= pd.read_excel("output/predicted_trajectoriesX0.xlsx")["LocationX"]
+modelY0= pd.read_excel("output/predicted_trajectoriesY0.xlsx")["LocationY"]
+modelZ0= pd.read_excel("output/predicted_trajectoriesZ0.xlsx")["LocationZ"]
+
 # Create a 3D scatter plot
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
@@ -44,6 +48,7 @@ ax.scatter(x, y, z, c='b', marker='o',label='actual')
 #ax.plot(x1, y1, z1, c='b', marker='o')
 # ax.scatter(x3, y3, z3, c='y', marker='o')
 ax.plot(modelX, modelY, modelZ, c='r', marker='o',label='predicted')
+#ax.plot(modelX0, modelY0, modelZ0, c='b', marker='o',label='predicted')
 
 
 # Set labels for the axes

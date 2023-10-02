@@ -21,7 +21,7 @@ def main():
             "time": time_points,
             "LocationX": pred_gbm
         })
-        predicted_data.to_excel("output/predicted_trajectoriesX.xlsx", index=False)
+        predicted_data.to_excel("output/predicted_trajectoriesX0.xlsx", index=False)
 
     # Load the trained model
     with open('models/trained_modelY.pkl', 'rb') as file:
@@ -33,7 +33,7 @@ def main():
             "time": time_points,
             "LocationY": pred_gbm
         })
-        predicted_data.to_excel("output/predicted_trajectoriesY.xlsx", index=False)
+        predicted_data.to_excel("output/predicted_trajectoriesY0.xlsx", index=False)
 
     # Load the trained model
     with open('models/trained_modelZ.pkl', 'rb') as file:
@@ -45,7 +45,7 @@ def main():
             "time": time_points,
             "LocationZ": pred_gbm
         })
-        predicted_data.to_excel("output/predicted_trajectoriesZ.xlsx", index=False)
+        predicted_data.to_excel("output/predicted_trajectoriesZ0.xlsx", index=False)
 
 
 
@@ -55,7 +55,7 @@ def predictData(gbm):
         "time": time_points,    
         "LaunchX": 0, #note these can be swapped cos in the trained model X is wrt to court
         "LaunchY": 0,
-        "LaunchZ": 1900,
+        "LaunchZ": 0,
         "LaunchAngle": 60,
         #calculate from arctan(opp/adj) which is arctan(changez/change in xandy) which is arctan(changez/sqrt(changex^2 + changey^2))
         #essentially calculated from a rotation around the y-axis

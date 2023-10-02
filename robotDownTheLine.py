@@ -2,26 +2,35 @@ import numpy as np
 import pandas as pd
 import math
 
-modelX= pd.read_excel("output/predicted_trajectoriesX.xlsx")
-modelY= pd.read_excel("output/predicted_trajectoriesY.xlsx")
-modelZ= pd.read_excel("output/predicted_trajectoriesZ.xlsx")
+#reading sample AI output data
+modelX= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationX']]
+modelY= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationY']]
+modelZ= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationZ']]
+modelX["LocationX"]*=10
+modelY["LocationY"]*=10
+modelZ["LocationZ"]*=10
 
 def main():
+    
+    #define constants in mm, can change as needed
     CONTACT_Z = 1300
     LENGTH_OF_RACKET = 630
     HEIGHT_OF_ROBOT = 500
-    targetPoint = (13400,-5640,0.0) #put 3D even though we assume Z-coordinate of landing point to forever be 0
     DURATION_OF_SWING = 0.0
 
+    #get time at which CONTACT_Z ie the height takes place, then from the time, determine the point of contact
     timeOfContact = getTimeFromZ(CONTACT_Z)
-    # pointOfContact= getXAtTime(timeOfContact), getYAtTime(timeOfContact), CONTACT_Z
-    pointOfContact = 1000,-1000,1300
+    pointOfContact= getXAtTime(timeOfContact), getYAtTime(timeOfContact), CONTACT_Z
+    #pointOfContact = 1000,-1000,1300
 
+    #calculate approx launch angle for positioning of robot, but note that launch angle should not be fixed during swing, since we already fixed the contact height
     launchAngle= math.sin((CONTACT_Z-HEIGHT_OF_ROBOT)/(LENGTH_OF_RACKET))
-    launchDirection= math.tan((targetPoint[1]-pointOfContact[1])/(targetPoint[0]-pointOfContact[0]))
+    launchDirection= 0
 
+    #calculate robot coordinates
     ROBOT_X = (LENGTH_OF_RACKET* math.cos(launchAngle) * math.cos(launchDirection)) + pointOfContact[0]
-    ROBOT_Y = (LENGTH_OF_RACKET* math.cos(launchAngle) * math.sin(launchDirection)) + pointOfContact[1]
+    #Robot_Y == pointOfContact_Y since we are hitting down the line
+    ROBOT_Y = (LENGTH_OF_RACKET* math.cos(launchAngle) * math.sin(launchDirection)) + pointOfContact[1] 
 
     robotPoint= (ROBOT_X,ROBOT_Y,0.0)
     timeStartSwing = timeOfContact - DURATION_OF_SWING
@@ -64,6 +73,8 @@ def getXAtTime(timeOfContact):
         elif modelX["time"][i] > timeOfContact:
            timeBefore = modelX["time"][i-1]
            timeAfter = modelX["time"][i]
+
+           #linear interpolation assuming roughly linear trajectory in 0.03s
            result = (((modelX["LocationX"][i]- modelX["LocationX"][i-1])*(timeOfContact-timeBefore))/(timeAfter-timeBefore)) + modelX["LocationX"][i-1]
            #print(f"Point of contact X is {result}")
            return result
@@ -77,6 +88,8 @@ def getYAtTime(timeOfContact):
         elif modelY["time"][i] > timeOfContact:
            timeBefore = modelY["time"][i-1]
            timeAfter = modelY["time"][i]
+           
+           #linear interpolation assuming roughly linear trajectory in 0.03s
            result = (((modelY["LocationY"][i]- modelY["LocationY"][i-1])*(timeOfContact-timeBefore))/(timeAfter-timeBefore)) + modelY["LocationY"][i-1]
            #print(f'Point of contact Y is {result}')
            return result

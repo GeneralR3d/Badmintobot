@@ -22,9 +22,9 @@ dataset = pd.read_excel("testSet/Vision Trajectory3.xlsx",'Trajectory 1')
 # yData=yData.reset_index(drop=True)
 # zData=zData.reset_index(drop=True)
 
-xData = dataset["y"]
-yData = dataset["x"]
-zData = dataset["z"]
+xData = dataset["y"] *10
+yData = dataset["x"] *10
+zData = (dataset["z"] *10) -1900
 
 
 
@@ -35,12 +35,12 @@ zData = dataset["z"]
 
 #Extraction of key values from arrays to feed to into model
 
-LaunchY= yData[0] * 10
-LaunchX= xData[0] * 10
-LaunchZ= zData[0] * 10
-changeY= (yData[1]-yData[0]) *10
-changeX= (xData[1]-xData[0]) *10
-changeZ= (zData[1]-zData[0]) *10
+LaunchY= yData[0]
+LaunchX= xData[0]
+LaunchZ= zData[0]
+changeY= (yData[1]-yData[0])
+changeX= (xData[1]-xData[0])
+changeZ= (zData[1]-zData[0])
 
 print(LaunchX)
 print(LaunchY)
@@ -57,7 +57,7 @@ def main():
             "time": time_points,
             "LocationX": pred_gbm
         })
-        predicted_data.to_excel("output/predicted_trajectoriesX1.xlsx", index=False)
+        predicted_data.to_excel("output/predicted_trajectoriesX.xlsx", index=False)
 
     # Load the trained model
     with open('models/trained_modelY.pkl', 'rb') as file:
@@ -69,7 +69,7 @@ def main():
             "time": time_points,
             "LocationY": pred_gbm
         })
-        predicted_data.to_excel("output/predicted_trajectoriesY1.xlsx", index=False)
+        predicted_data.to_excel("output/predicted_trajectoriesY.xlsx", index=False)
 
     # Load the trained model
     with open('models/trained_modelZ.pkl', 'rb') as file:
@@ -81,7 +81,7 @@ def main():
             "time": time_points,
             "LocationZ": pred_gbm
         })
-        predicted_data.to_excel("output/predicted_trajectoriesZ1.xlsx", index=False)
+        predicted_data.to_excel("output/predicted_trajectoriesZ.xlsx", index=False)
 
 
 
