@@ -2,18 +2,22 @@ import numpy as np
 import pandas as pd
 import math
 
+'''
+#note that the point of origin is defined at the players side NOT THE ROBOT side
+#-ve X is not possible as it is out of court + since shuttle travels from player side to robot side in ALL shots, the X-coordinate is always increasing
+# +ve Y is defined as player right, robot left
+# -ve Y is defined as player left, robot right
+'''
+
 #reading sample AI output data
 modelX= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationX']]
 modelY= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationY']]
 modelZ= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationZ']]
-modelX["LocationX"]*=10
-modelY["LocationY"]*=10
-modelZ["LocationZ"]*=10
 
 def main():
     
     #define constants in mm, can change as needed
-    CONTACT_Z = 1300
+    CONTACT_Z = 1000
     LENGTH_OF_RACKET = 630
     HEIGHT_OF_ROBOT = 500
     DURATION_OF_SWING = 0.0
@@ -24,7 +28,7 @@ def main():
     #pointOfContact = 1000,-1000,1300
 
     #calculate approx launch angle for positioning of robot, but note that launch angle should not be fixed during swing, since we already fixed the contact height
-    launchAngle= math.sin((CONTACT_Z-HEIGHT_OF_ROBOT)/(LENGTH_OF_RACKET))
+    launchAngle= math.asin((CONTACT_Z-HEIGHT_OF_ROBOT)/(LENGTH_OF_RACKET))
     launchDirection= 0
 
     #calculate robot coordinates
@@ -42,7 +46,7 @@ def main():
 
 
 
-def getTimeFromZ(contactHeight = 1300):
+def getTimeFromZ(contactHeight = 1000):
     CONTACT_Z = contactHeight
     MAX_HEIGHT= modelZ["LocationZ"].max()
     passedMaxHeight = False

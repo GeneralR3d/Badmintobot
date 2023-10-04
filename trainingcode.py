@@ -26,6 +26,10 @@ def main():
 #NOTE THE UNITS, EVERY THING IS IN MM, ANGLES ARE IN DEGREES, INITIALV IS IN M/S
 #newIndex= ["time",	"LocationY","LocationX","LocationZ","LaunchY",	"LaunchX","LaunchZ","LaunchAngle",	"LaunchDirection",	"InitialV",	"label"]
 #data=data.reindex(columns=newIndex)
+#note that the point of origin is defined at the players side NOT THE ROBOT side
+#-ve X is not possible as it is out of court + since shuttle travels from player side to robot side in ALL shots, the X-coordinate is always increasing
+# +ve Y is defined as player right, robot left
+# -ve Y is defined as player left, robot right
 
 def train(output_col):
     X = data[["time", "LaunchX", "LaunchY", "LaunchZ", "LaunchAngle", "LaunchDirection", "InitialV"]]

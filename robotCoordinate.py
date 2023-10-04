@@ -2,31 +2,37 @@ import numpy as np
 import pandas as pd
 import math
 
+'''
+#note that the point of origin is defined at the players side NOT THE ROBOT side
+#-ve X is not possible as it is out of court + since shuttle travels from player side to robot side in ALL shots, the X-coordinate is always increasing
+# +ve Y is defined as player right, robot left
+# -ve Y is defined as player left, robot right
+'''
+
 #reading sample AI output data
 modelX= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationX']]
 modelY= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationY']]
 modelZ= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationZ']]
-modelX["LocationX"]*=10
-modelY["LocationY"]*=10
-modelZ["LocationZ"]*=10
+
 
 def main():
     
     #define constants in mm, can change as needed
-    CONTACT_Z = 1300
+    CONTACT_Z = 1000
     LENGTH_OF_RACKET = 630
     HEIGHT_OF_ROBOT = 500
-    targetPoint = (13400,-5640,0.0) #put 3D even though we assume Z-coordinate of landing point to forever be 0
+    targetPoint = (0.0,-2590,0.0) #put 3D even though we assume Z-coordinate of landing point to forever be 0
     DURATION_OF_SWING = 0.0
 
     #get time at which CONTACT_Z ie the height takes place, then from the time, determine the point of contact
     timeOfContact = getTimeFromZ(CONTACT_Z)
     pointOfContact= getXAtTime(timeOfContact), getYAtTime(timeOfContact), CONTACT_Z
-    #pointOfContact = 1000,-1000,1300
+    #pointOfContact = 1000,-2500,1000
 
     #calculate approx launch angle for positioning of robot, but note that launch angle should not be fixed during swing, since we already fixed the contact height
-    launchAngle= math.sin((CONTACT_Z-HEIGHT_OF_ROBOT)/(LENGTH_OF_RACKET))
-    launchDirection= math.tan((targetPoint[1]-pointOfContact[1])/(targetPoint[0]-pointOfContact[0]))
+    launchAngle= math.asin((CONTACT_Z-HEIGHT_OF_ROBOT)/(LENGTH_OF_RACKET))
+    launchDirection= math.atan((targetPoint[1]-pointOfContact[1])/(targetPoint[0]-pointOfContact[0]))
+    
 
     #calculate robot coordinates
     ROBOT_X = (LENGTH_OF_RACKET* math.cos(launchAngle) * math.cos(launchDirection)) + pointOfContact[0]
@@ -42,7 +48,7 @@ def main():
 
 
 
-def getTimeFromZ(contactHeight = 1300):
+def getTimeFromZ(contactHeight = 1000):
     CONTACT_Z = contactHeight
     MAX_HEIGHT= modelZ["LocationZ"].max()
     passedMaxHeight = False

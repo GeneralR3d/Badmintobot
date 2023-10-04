@@ -8,7 +8,7 @@ end_time = 2
 
 time_points = np.arange(0, end_time + time_interval, time_interval)
 
-dataset = pd.read_excel("testSet/Vision Trajectory3.xlsx",'Trajectory 1')
+dataset = pd.read_excel("testData/Vision Trajectory3.xlsx",'Trajectory 1')
 
 # The flipping of X and Y axes is done here
 
@@ -45,6 +45,7 @@ changeZ= (zData[1]-zData[0])
 print(LaunchX)
 print(LaunchY)
 print(LaunchZ)
+
 
 def main():
     # Load the trained model
