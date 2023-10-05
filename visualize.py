@@ -7,14 +7,14 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 '''With no magic frame'''
-dataset = pd.read_excel("testSet/Vision Trajectory3.xlsx",'Trajectory 1')
+dataset = pd.read_excel("testData/Vision Trajectory3.xlsx",'Trajectory 1')
 x = dataset["y"]
 y = dataset["x"]
-z = dataset["z"] - 190
+z = dataset["z"]
 
 '''With magic frame for plotting points that are not yet fed into the ML model'''
-# magicStartFrame = 26
-# dataset1 = pd.read_excel("testSet/Vision Trajectory3.xlsx",'forward6_scaled')
+# magicStartFrame = 0
+# dataset1 = pd.read_excel("testData/Vision Trajectory3.xlsx",'forward3_out')
 # x1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["y"]
 # y1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["x"]
 # z1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["z"]
@@ -30,9 +30,9 @@ z = z * 10
 
 
 #read from predicted data
-modelX= pd.read_excel("output/predicted_trajectoriesX.xlsx")["LocationX"]
-modelY= pd.read_excel("output/predicted_trajectoriesY.xlsx")["LocationY"]
-modelZ= pd.read_excel("output/predicted_trajectoriesZ.xlsx")["LocationZ"]
+modelX= pd.read_excel("VisionModel/output/predicted_trajectoriesX.xlsx")["LocationX"]
+modelY= pd.read_excel("VisionModel/output/predicted_trajectoriesY.xlsx")["LocationY"]
+modelZ= pd.read_excel("VisionModel/output/predicted_trajectoriesZ.xlsx")["LocationZ"]
 
 
 # Create a 3D scatter plot

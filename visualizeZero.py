@@ -30,25 +30,25 @@ from mpl_toolkits.mplot3d import Axes3D
 
 
 #read from predicted data
-modelX= pd.read_excel("output/predicted_trajectoriesX.xlsx")["LocationX"]
-modelY= pd.read_excel("output/predicted_trajectoriesY.xlsx")["LocationY"]
-modelZ= pd.read_excel("output/predicted_trajectoriesZ.xlsx")["LocationZ"]
+modelX= pd.read_excel("VisionModel/output/predicted_trajectoriesX.xlsx")["LocationX"]
+modelY= pd.read_excel("VisionModel/output/predicted_trajectoriesY.xlsx")["LocationY"]
+modelZ= pd.read_excel("VisionModel/output/predicted_trajectoriesZ.xlsx")["LocationZ"]
 
 
-modelX0= pd.read_excel("output/predicted_trajectoriesX0.xlsx")["LocationX"]
-modelY0= pd.read_excel("output/predicted_trajectoriesY0.xlsx")["LocationY"]
-modelZ0= pd.read_excel("output/predicted_trajectoriesZ0.xlsx")["LocationZ"]
+modelX0= pd.read_excel("VisionModel/output/predicted_trajectoriesX0.xlsx")["LocationX"]
+modelY0= pd.read_excel("VisionModel/output/predicted_trajectoriesY0.xlsx")["LocationY"]
+modelZ0= pd.read_excel("VisionModel/output/predicted_trajectoriesZ0.xlsx")["LocationZ"]
 
 # Create a 3D scatter plot
 fig = plt.figure()
 ax = fig.add_subplot(projection='3d')
 
 # Scatter plot
-ax.scatter(x, y, z, c='b', marker='o',label='actual')
+#ax.scatter(x, y, z, c='b', marker='o',label='actual')
 #ax.plot(x1, y1, z1, c='b', marker='o')
 # ax.scatter(x3, y3, z3, c='y', marker='o')
 ax.plot(modelX, modelY, modelZ, c='r', marker='o',label='predicted')
-#ax.plot(modelX0, modelY0, modelZ0, c='b', marker='o',label='predicted')
+ax.plot(modelX0, modelY0, modelZ0, c='b', marker='o',label='predicted')
 
 
 # Set labels for the axes
