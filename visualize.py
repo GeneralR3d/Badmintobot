@@ -14,7 +14,7 @@ z = dataset["z"]
 
 '''With magic frame for plotting points that are not yet fed into the ML model'''
 # magicStartFrame = 0
-# dataset1 = pd.read_excel("testData/Vision Trajectory3.xlsx",'forward3_out')
+# dataset1 = pd.read_excel("testData/Vision Trajectory3.xlsx",'forward6_scaled')
 # x1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["y"]
 # y1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["x"]
 # z1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["z"]

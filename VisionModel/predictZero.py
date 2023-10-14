@@ -55,14 +55,14 @@ def predictData(gbm):
         "time": time_points,    
         "LaunchX": 0, #note these can be swapped cos in the trained model X is wrt to court
         "LaunchY": 0,
-        "LaunchZ": 1000,
+        "LaunchZ": 1300,
         "LaunchAngle": 30,
         #calculate from arctan(opp/adj) which is arctan(changez/change in xandy) which is arctan(changez/sqrt(changex^2 + changey^2))
         #essentially calculated from a rotation around the y-axis
         "LaunchDirection":0,
             #calculate from arctan(opp/adj) which is arctan(change in x/change in yandz) which is arctan( changex/sqrt(changey^2 + changez^2)
             #calculated from a rotation around the z-axis
-        "InitialV": 40
+        "InitialV": 30
 
             #calcuate from change in the 3d position over change in time period
             #recall velocity is a vector so the initialV can only be length of that vector

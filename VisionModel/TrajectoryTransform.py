@@ -5,6 +5,7 @@ shiftStep = 100
 #100mm is the shift step, which is 0.1m
 
 
+
 dataset= pd.read_excel("dataset.xlsx")
 
 def main():
@@ -22,10 +23,9 @@ def main():
         while dataset.iloc[index+1]['time'] - dataset.iloc[index]['time'] > 0:
             index +=1
         new= dataset.iloc[startIndex: index+1] #recall python list slicing doesnt include the end point
+        print(new)
         transformX(new,100,4000) #lower range is 0, need plus 100
-        print(dataset)
         transformY(new,-2490,2590) #lower range is -2590, need plus 100
-        print(dataset)
         transformZ(new,200,3000) #lower range is 100, need plus 100
 
 

@@ -5,7 +5,7 @@ import math
 #constant
 time_interval=1/30
 
-dataset= pd.read_excel("datasetTBFilled.xlsx")
+dataset= pd.read_excel("datasetTBFilled3D.xlsx")
 
 for i in dataset['label'].unique():
     currentDF=dataset[dataset['label']==i]
@@ -21,4 +21,4 @@ for i in dataset['label'].unique():
     currentDF['InitialV']=(math.sqrt(changeX**2 + changeY**2 + changeZ**2)/time_interval)/1000
     dataset.update(currentDF)
 
-dataset.to_excel("datasetFilled.xlsx",index=False)
+dataset.to_excel("datasetFilled3D.xlsx",index=False)
