@@ -3,18 +3,20 @@ import numpy as np
 import pandas as pd
 from mpl_toolkits.mplot3d import Axes3D
 
-# read from test data
+
+#NAME='forward6_scaled'
+NAME='Trajectory 1'
 
 
 '''With no magic frame'''
-dataset = pd.read_excel("testData/Vision Trajectory3.xlsx",'Trajectory 1')
+dataset = pd.read_excel("testData/Vision Trajectory3.xlsx",NAME)
 x = dataset["y"]
 y = dataset["x"]
 z = dataset["z"]
 
 '''With magic frame for plotting points that are not yet fed into the ML model'''
 # magicStartFrame = 0
-# dataset1 = pd.read_excel("testData/Vision Trajectory3.xlsx",'forward6_scaled')
+# dataset1 = pd.read_excel("testData/Vision Trajectory3.xlsx",NAME)
 # x1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["y"]
 # y1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["x"]
 # z1 = dataset1[(dataset1["Ball"]==1) & (dataset1["Frame"]>=magicStartFrame)]["z"]
@@ -57,7 +59,7 @@ ax.set_ylim(-3000, 3000)
 ax.set_zlim(0, 5000)
 
 # Set a title
-ax.set_title('Trajectory 1')
+ax.set_title(NAME)
 
 # Show the plot
 plt.show()

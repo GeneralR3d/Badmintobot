@@ -3,12 +3,36 @@ import numpy as np
 import pickle
 import math
 
-time_interval = 1/30
+def findStart(dataframe):
+    '''
+    Find the true start point of a trajectory by looking at acceleration values between each of the points.
+    The true start is the first frame when the shuttlecock has just left the racket. Assume that happens when shuttlecock reaches its max instantaneous velocity.
+    Then the true start point should be the i+1 point! Since the speed btwn i+2 and i+1 is less than btwn i+1 and i, it makes sense that
+    shuttlecock left at i+1!
+    '''
+    speeds = []
+    # we minus one since we are unable to access the coordinates at t+1 for the very last row, DNE! 
+    for i in range(len(dataframe)-1):
+        row = dataframe.iloc[i]
+        nextRow = dataframe.iloc[i+1]
+        forwardSpeed = (math.sqrt((nextRow['LocationX'] - row['LocationX'])**2 + 
+                                  (nextRow['LocationY'] - row['LocationY'])**2 +
+                                  (nextRow['LocationZ'] - row['LocationZ'])**2)) /(TIME_INTERVAL)
+        speeds.append((forwardSpeed,i,i+1))
+    speeds.sort(key= lambda x:x[0],reverse=True)
+    trueStartIndex = speeds[0][2]
+    return dataframe[trueStartIndex:]
+
+############################################################################################################
+
+TIME_INTERVAL = 1/30
 end_time = 2
 
-time_points = np.arange(0, end_time + time_interval, time_interval)
+
+time_points = np.arange(0, end_time + TIME_INTERVAL, TIME_INTERVAL)
 
 dataset = pd.read_excel("../testData/Vision Trajectory3.xlsx",'Trajectory 1')
+correctedDF = pd.DataFrame()
 
 # The flipping of X and Y axes is done here
 
@@ -22,9 +46,12 @@ dataset = pd.read_excel("../testData/Vision Trajectory3.xlsx",'Trajectory 1')
 # yData=yData.reset_index(drop=True)
 # zData=zData.reset_index(drop=True)
 
-xData = dataset["y"] *10
-yData = dataset["x"] *10
-zData = (dataset["z"] *10)
+correctedDF["LocationX"] = dataset["y"] *10
+correctedDF["LocationY"] = dataset["x"] *10
+correctedDF["LocationZ"] = dataset["z"] *10
+#correctedDF=findStart(correctedDF)  
+#correctedDF = correctedDF.set_index(drop=True,keys=np.arange(0,len(correctedDF))) #reset the index to start from 0, keys is an array/iterator of index values, same size as df itself
+
 
 
 
@@ -35,12 +62,12 @@ zData = (dataset["z"] *10)
 
 #Extraction of key values from arrays to feed to into model
 
-LaunchY= yData[0]
-LaunchX= xData[0]
-LaunchZ= zData[0]
-changeY= (yData[1]-yData[0])
-changeX= (xData[1]-xData[0])
-changeZ= (zData[1]-zData[0])
+LaunchX= correctedDF["LocationX"][0]
+LaunchY= correctedDF["LocationY"][0]
+LaunchZ= correctedDF["LocationZ"][0]
+changeX= (correctedDF["LocationX"][1]-correctedDF["LocationX"][0])
+changeY= (correctedDF["LocationY"][1]-correctedDF["LocationY"][0])
+changeZ= (correctedDF["LocationZ"][1]-correctedDF["LocationZ"][0])
 
 print(LaunchX)
 print(LaunchY)
@@ -109,7 +136,7 @@ def predictData(gbm):
         "LaunchDirection": (math.atan((changeY)/(math.sqrt(changeX**2 + changeZ**2))) * (180/math.pi)),
             #calculate from arctan(opp/adj) which is arctan(change in x/change in yandz) which is arctan( changex/sqrt(changey^2 + changez^2)
             #calculated from a rotation around the z-axis
-        "InitialV": (math.sqrt(changeX**2 + changeY**2 + changeZ**2)/time_interval)/1000
+        "InitialV": (math.sqrt(changeX**2 + changeY**2 + changeZ**2)/TIME_INTERVAL)/1000
 
             #calcuate from change in the 3d position over change in time period
             #recall velocity is a vector so the initialV can only be length of that vector
@@ -118,6 +145,7 @@ def predictData(gbm):
     y_pred_gbm = gbm.predict(input_data)
     
     return y_pred_gbm
+
 
 
 #existing_data = pd.read_excel("predicted_trajectories.xlsx")

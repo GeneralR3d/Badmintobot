@@ -6,7 +6,7 @@ shiftStep = 100
 
 
 
-dataset= pd.read_excel("dataset.xlsx")
+dataset= pd.read_excel("datasetHandModified.xlsx")
 
 def main():
     global dataset
@@ -20,8 +20,11 @@ def main():
         index = startIndex
         # this condition in while loop will be false when we index+1 is a zero. Since zero minus any value before will be negative. 
         #This way we stop at index, which is before zero.
-        while dataset.iloc[index+1]['time'] - dataset.iloc[index]['time'] > 0:
-            index +=1
+        try:
+            while dataset.iloc[index+1]['time'] - dataset.iloc[index]['time'] > 0:
+                index +=1
+        except IndexError:
+            pass
         new= dataset.iloc[startIndex: index+1] #recall python list slicing doesnt include the end point
         print(new)
         transformX(new,100,4000) #lower range is 0, need plus 100

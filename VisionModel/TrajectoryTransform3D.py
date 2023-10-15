@@ -1,12 +1,12 @@
 import numpy as np
 import pandas as pd
 
-shiftStep = 150
+shiftStep = 100
 #100mm is the shift step, which is 0.1m
 
 
 
-dataset= pd.read_excel("datasetModified.xlsx")
+dataset= pd.read_excel("test.xlsx")
 
 def main():
     global dataset
@@ -20,8 +20,12 @@ def main():
         index = startIndex
         # this condition in while loop will be false when we index+1 is a zero. Since zero minus any value before will be negative. 
         #This way we stop at index, which is before zero.
-        while dataset.iloc[index+1]['time'] - dataset.iloc[index]['time'] > 0:
-            index +=1
+        # NOTE we might get some indexError if trying to access the very last set of values since we are indexing past the dataframe
+        try:
+            while dataset.iloc[index+1]['time'] - dataset.iloc[index]['time'] > 0:
+                index +=1
+        except IndexError:
+            pass
         new= dataset.iloc[startIndex: index+1] #recall python list slicing doesnt include the end point
 
 
@@ -35,20 +39,30 @@ def main():
         returnedDFY = None
         returnedDFZ = None
 
+        # These flags are essentially one time use, for checking if they have reached inclusiveMin for the first time.
+        # Since the functions always check for inclusiveMin first before inclusiveMax, if inclusiveMin has been reached we need to "bring",
+        # the values back to original, ie the middle, so that subsequent calls will start to count up from the original, instead of the min, which would otherwise lead to repetition
+        XResetHasHappen = False
+        
+        
+
         # start of X loop
         newX = new
         while True:
-            returnedDFX, reachedinclusiveMinX, reachedinclusiveMaxX = transformX(newX,100,4000,reachedinclusiveMinX,reachedinclusiveMaxX) #lower range is 0, need plus 100
+            returnedDFX, reachedinclusiveMinX, reachedinclusiveMaxX = transformX(newX,2300,2400,reachedinclusiveMinX,reachedinclusiveMaxX) #lower range is 0, need plus 100
             
             if returnedDFX is None: 
                 break
             
+                
+            
             dataset=pd.concat([dataset,returnedDFX],ignore_index=True)
 
             # start of Y loop
+            YResetHasHappen = False
             newY = returnedDFX
             while True:
-                returnedDFY, reachedinclusiveMinY, reachedinclusiveMaxY = transformY(newY,-2490,2590, reachedinclusiveMinY, reachedinclusiveMaxY) #lower range is -2590, need plus 100
+                returnedDFY, reachedinclusiveMinY, reachedinclusiveMaxY = transformY(newY,200,300, reachedinclusiveMinY, reachedinclusiveMaxY) #lower range is -2590, need plus 100
                 
                 if returnedDFY is None:
                     break
@@ -57,23 +71,45 @@ def main():
                 
 
                 # start of Z loop
+                ZResetHasHappen = False
                 newZ = returnedDFY
                 while True:
-                    returnedDFZ, reachedinclusiveMinZ, reachedinclusiveMaxZ = transformZ(newZ,200,3000, reachedinclusiveMinZ, reachedinclusiveMaxZ) #lower range is 100, need plus 100
+                    returnedDFZ, reachedinclusiveMinZ, reachedinclusiveMaxZ = transformZ(newZ,3200,3300, reachedinclusiveMinZ, reachedinclusiveMaxZ) #lower range is 100, need plus 100
 
                     if returnedDFZ is None:
                         break
                     
                     dataset=pd.concat([dataset,returnedDFZ],ignore_index=True)
-                    newZ= returnedDFZ
+                    if reachedinclusiveMinZ and not ZResetHasHappen:
+                        newZ = returnedDFY
+                        ZResetHasHappen = True
+                    else:
+                        newZ= returnedDFZ
+
                 # runs after Z loop terminates
-                newY = returnedDFY
+                if reachedinclusiveMinY and not YResetHasHappen:
+                    newY = returnedDFX
+                    YResetHasHappen = True
+                else:
+                    newY = returnedDFY
+                reachedinclusiveMinZ = False
+                reachedinclusiveMaxZ = False
 
             # runs after Y loop terminates
-            newX = returnedDFX
+            if reachedinclusiveMinX and not XResetHasHappen:
+                newX=new
+                XResetHasHappen = True
+            else:
+                newX = returnedDFX
+            reachedinclusiveMinY = False
+            reachedinclusiveMaxY = False
+
+        # for completeness, doesnt actually do anything
+        reachedinclusiveMinX = False
+        reachedinclusiveMaxX = False
 
 
-    dataset.to_excel('datasetTBFilled3D.xlsx',index=False)
+    dataset.to_excel('testTBFilled3D.xlsx',index=False)
 
 
 def getLastLabel():
