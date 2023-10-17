@@ -62,9 +62,9 @@ correctedDF["LocationZ"] = dataset["z"] *10
 
 #Extraction of key values from arrays to feed to into model
 
-LaunchX= correctedDF["LocationX"][0]
-LaunchY= correctedDF["LocationY"][0]
-LaunchZ= correctedDF["LocationZ"][0]
+LaunchX= correctedDF["LocationX"][10]
+LaunchY= correctedDF["LocationY"][10]
+LaunchZ= correctedDF["LocationZ"][10]
 changeX= (correctedDF["LocationX"][1]-correctedDF["LocationX"][0])
 changeY= (correctedDF["LocationY"][1]-correctedDF["LocationY"][0])
 changeZ= (correctedDF["LocationZ"][1]-correctedDF["LocationZ"][0])

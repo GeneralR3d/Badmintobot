@@ -5,7 +5,7 @@ from sklearn.ensemble import GradientBoostingRegressor
 import pickle
 
 '''Trajectory 1 is left out of training dataset to be used as testing'''
-data = pd.read_excel("datasetFilled3D.xlsx")
+data = pd.read_excel("datasetFilled.xlsx")
 
 def main():
     with open('models/trained_modelX.pkl', 'wb') as file:
