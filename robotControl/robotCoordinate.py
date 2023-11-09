@@ -14,7 +14,7 @@ modelX= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationX']]
 modelY= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationY']]
 modelZ= pd.read_excel("sampleAIOutput.xlsx")[['time','LocationZ']]
 
-#comments
+#comment
 def main():
     
     #define constants in mm, can change as needed
