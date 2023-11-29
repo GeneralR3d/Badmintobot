@@ -9,7 +9,7 @@ NAME='Trajectory 1'
 
 
 '''With no magic frame'''
-dataset = pd.read_excel("testData/Vision Trajectory3.xlsx",NAME)
+dataset = pd.read_excel("../../testData/Vision Trajectory3.xlsx",NAME)
 x = dataset["y"]
 y = dataset["x"]
 z = dataset["z"]
@@ -32,9 +32,9 @@ z = z * 10
 
 
 #read from predicted data
-modelX= pd.read_excel("VisionModel/output/predicted_trajectoriesX.xlsx")["LocationX"]
-modelY= pd.read_excel("VisionModel/output/predicted_trajectoriesY.xlsx")["LocationY"]
-modelZ= pd.read_excel("VisionModel/output/predicted_trajectoriesZ.xlsx")["LocationZ"]
+modelX= pd.read_excel("output/predicted_trajectoriesX.xlsx")["LocationX"]
+modelY= pd.read_excel("output/predicted_trajectoriesY.xlsx")["LocationY"]
+modelZ= pd.read_excel("output/predicted_trajectoriesZ.xlsx")["LocationZ"]
 
 
 # Create a 3D scatter plot
@@ -59,7 +59,7 @@ ax.set_ylim(-3000, 3000)
 ax.set_zlim(0, 5000)
 
 # Set a title
-ax.set_title(NAME)
+ax.set_title(NAME+"without train test split")
 
 # Show the plot
 plt.show()

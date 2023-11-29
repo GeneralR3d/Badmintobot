@@ -20,7 +20,7 @@ class PredictClass:
         self.end_time = end_time
         self.time_points = np.arange(0, end_time + self.TIME_INTERVAL, self.TIME_INTERVAL)
 
-        dataset = pd.read_excel("../testData/Vision Trajectory3.xlsx",'Trajectory 1')
+        dataset = pd.read_excel("../../testData/Vision Trajectory3.xlsx",'Trajectory 1')
         correctedDF = pd.DataFrame()
         correctedDF["LocationX"] = dataset["y"] *10
         correctedDF["LocationY"] = dataset["x"] *10
@@ -41,48 +41,24 @@ class PredictClass:
         print(self.launchZ)
 
         # Load the trained model
-        with open('models/trained_modelX.pkl', 'rb') as file:
+        with open('../models/trained_model.pkl', 'rb') as file:
             pickleStartTime = time.time()
             gbm = pickle.load(file)
-            print(f"X Pickle loading takes {time.time()-pickleStartTime}sec")
+            print(f"Pickle loading takes {time.time()-pickleStartTime}sec")
             pred_gbm=self.predictData(gbm)
 
             # Output the predicted data
             predicted_data = pd.DataFrame({
                 "time": self.time_points,
-                "LocationX": pred_gbm
+                "LocationX": pred_gbm[0],
+                "LocationY": pred_gbm[1],
+                "LocationZ": pred_gbm[2]
             })
             toExcel = time.time()
-            predicted_data.to_excel("output/predicted_trajectoriesX.xlsx", index=False)
+            predicted_data.to_excel("output/predicted_trajectoriesCombined.xlsx", index=False)
             print(f"Saving to excel takes {time.time()-toExcel} sec")
 
-        # Load the trained model
-        with open('models/trained_modelY.pkl', 'rb') as file:
-            pickleStartTime = time.time()
-            gbm = pickle.load(file)
-            print(f"Y Pickle loading takes {time.time()-pickleStartTime}sec")
-            pred_gbm=self.predictData(gbm)
 
-            # Output the predicted data
-            predicted_data = pd.DataFrame({
-                "time": self.time_points,
-                "LocationY": pred_gbm
-            })
-            predicted_data.to_excel("output/predicted_trajectoriesY.xlsx", index=False)
-
-        # Load the trained model
-        with open('models/trained_modelZ.pkl', 'rb') as file:
-            pickleStartTime = time.time()
-            gbm = pickle.load(file)
-            print(f"Z Pickle loading takes {time.time()-pickleStartTime}sec")
-            pred_gbm=self.predictData(gbm)
-
-            # Output the predicted data
-            predicted_data = pd.DataFrame({
-                "time": self.time_points,
-                "LocationZ": pred_gbm
-            })
-            predicted_data.to_excel("output/predicted_trajectoriesZ.xlsx", index=False)
 
         print(f"Whole prediction takes { time.time() - predictStartTime}sec")
 
@@ -109,6 +85,7 @@ class PredictClass:
                 #vector is a difference in all 3 coordinates
         })
         y_pred_gbm = gbm.predict(input_data)
+        y_pred_gbm = y_pred_gbm.transpose()
         
         print(f"Model predict takes {time.time()- predictStart}sec")
         return y_pred_gbm

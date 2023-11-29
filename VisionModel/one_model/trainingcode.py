@@ -2,20 +2,15 @@ import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import GradientBoostingRegressor
+from sklearn.multioutput import MultiOutputRegressor
 import pickle
 
 '''Trajectory 1 is left out of training dataset to be used as testing'''
-data = pd.read_excel("datasetFilled.xlsx")
+data = pd.read_excel("../preprocessing/datasetFilled.xlsx")
 
 def main():
-    with open('models/trained_modelX.pkl', 'wb') as file:
-        gbm=train("LocationX")
-        pickle.dump(gbm, file)
-    with open('models/trained_modelY.pkl', 'wb') as file:
-        gbm=train("LocationY")
-        pickle.dump(gbm, file)
-    with open('models/trained_modelZ.pkl', 'wb') as file:
-        gbm=train("LocationZ")
+    with open('../models/trained_model.pkl', 'wb') as file:
+        gbm=train()
         pickle.dump(gbm, file)
     
 
@@ -31,12 +26,18 @@ def main():
 # +ve Y is defined as player right, robot left
 # -ve Y is defined as player left, robot right
 
-def train(output_col):
+def train():
     X = data[["time", "LaunchX", "LaunchY", "LaunchZ", "LaunchAngle", "LaunchDirection", "InitialV"]]
-    y = data[output_col]
-    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
-    gbm = GradientBoostingRegressor(n_estimators=300, learning_rate=0.1, random_state=42, max_depth=50, max_features='sqrt')
-    gbm.fit(X_train, y_train)
+    y = data[["LocationX","LocationY","LocationZ"]]
+    #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)
+
+    params = {'n_estimators': 300, 
+              'learning_rate':0.1,
+              'random_state':42,  
+              'max_depth':50,  
+              'max_features': 'sqrt'}
+    gbm = MultiOutputRegressor(GradientBoostingRegressor(**params))
+    gbm.fit(X,y)
     return gbm
 
 
