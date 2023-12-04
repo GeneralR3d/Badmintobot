@@ -32,7 +32,7 @@ z = z * 10
 
 
 #read from predicted data
-model= pd.read_excel("output/predicted_trajectoriesCombined.xlsx")
+model= pd.read_excel("output/predicted_trajectories_DartsCombined.xlsx")
 
 
 

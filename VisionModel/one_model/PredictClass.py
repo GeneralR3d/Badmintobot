@@ -84,6 +84,7 @@ class PredictClass:
                 #recall velocity is a vector so the initialV can only be length of that vector
                 #vector is a difference in all 3 coordinates
         })
+        print(input_data)
         y_pred_gbm = gbm.predict(input_data)
         y_pred_gbm = y_pred_gbm.transpose()
         
