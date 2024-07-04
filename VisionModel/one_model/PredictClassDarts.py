@@ -16,6 +16,7 @@ class PredictClassDarts:
     TIME_INTERVAL = 1/30
     end_time = None
     time_points = None
+    length_of_snippet = None
     snippetX= None
     snippetY= None
     snippetZ= None
@@ -31,9 +32,14 @@ class PredictClassDarts:
     changeY= None
     changeZ= None
 
-    def __init__(self,end_time,input_frames):
+    # model constant
+    OUTPUT_CHUNK_SIZE = 40
+
+    def __init__(self,end_time,start_frame,end_frame):
+
+
         self.end_time = end_time
-        self.time_points = np.arange(0, end_time + self.TIME_INTERVAL, self.TIME_INTERVAL)
+        self.time_points = np.arange(0, end_time + self.TIME_INTERVAL, self.TIME_INTERVAL) #TODO not used for now since not able to generate any sized prediction from model
 
         dataset = pd.read_excel("../../testData/Vision Trajectory3.xlsx",'Trajectory 1')
         correctedDF = pd.DataFrame()
@@ -41,9 +47,21 @@ class PredictClassDarts:
         correctedDF["LocationY"] = dataset["x"] *10
         correctedDF["LocationZ"] = dataset["z"] *10
 
-        self.snippetX= correctedDF["LocationX"][0:input_frames]
-        self.snippetY= correctedDF["LocationY"][0:input_frames]
-        self.snippetZ= correctedDF["LocationZ"][0:input_frames]
+        if start_frame < 0 or end_frame < 0:
+            raise ArithmeticError("Frame number cannot be negative!")
+        if start_frame > len(correctedDF) or end_frame > len(correctedDF):
+            raise IndexError("Out of range!")
+        if start_frame > end_frame:
+            raise ArithmeticError("Start frame cannot be after end frame!")
+        if end_frame - start_frame < 1:
+            raise ArithmeticError("Snippet must be at least one frame long!")
+        
+        self.length_of_snippet = end_frame - start_frame + 1
+        
+
+        self.snippetX= ((correctedDF["LocationX"]).iloc[start_frame: end_frame+1]).copy(deep=True).reset_index(drop=True)
+        self.snippetY= ((correctedDF["LocationY"]).iloc[start_frame: end_frame+1]).copy(deep=True).reset_index(drop=True)
+        self.snippetZ= ((correctedDF["LocationZ"]).iloc[start_frame: end_frame+1]).copy(deep=True).reset_index(drop=True)
 
         self.diffX= pd.Series([j-i for i,j in zip(self.snippetX, self.snippetX[1:])])
         self.diffY= pd.Series([j-i for i,j in zip(self.snippetY, self.snippetY[1:])])
@@ -73,7 +91,7 @@ class PredictClassDarts:
 
         # Output the predicted data
         predicted_data = pd.DataFrame({
-            "frame": np.arange(0,46),
+            "time": np.arange(0,self.OUTPUT_CHUNK_SIZE + self.length_of_snippet) * self.TIME_INTERVAL,
             "LocationX": pd.concat([self.snippetX,pred_gbm['LocationX'].pd_series()],ignore_index=True),
             "LocationY": pd.concat([self.snippetY,pred_gbm['LocationY'].pd_series()],ignore_index=True),
             "LocationZ": pd.concat([self.snippetZ,pred_gbm['LocationZ'].pd_series()],ignore_index=True)
@@ -90,7 +108,7 @@ class PredictClassDarts:
     
     def predictData(self,gbm):
         predictStart = time.time()
-        hello = pd.DataFrame({
+        targetDF = pd.DataFrame({
                 'LocationX': self.snippetX,
                 'LocationY': self.snippetY,
                 'LocationZ': self.snippetZ,
@@ -115,7 +133,7 @@ class PredictClassDarts:
         #         "InitialV": [(math.sqrt(self.changeX**2 + self.changeY**2 + self.changeZ**2)/self.TIME_INTERVAL)/1000] *len(self.snippetX)
         #     }),static_covariates=["LaunchX", "LaunchY", "LaunchZ", "LaunchAngle", "LaunchDirection", "InitialV"]
         # )
-        target = TimeSeries.from_dataframe(hello,value_cols=['LocationX','LocationY','LocationZ'],static_covariates=(hello[["LaunchX", "LaunchY", "LaunchZ", "LaunchAngle", "LaunchDirection", "InitialV"]]).head(1))
+        target = TimeSeries.from_dataframe(targetDF,value_cols=['LocationX','LocationY','LocationZ'],static_covariates=(targetDF[["LaunchX", "LaunchY", "LaunchZ", "LaunchAngle", "LaunchDirection", "InitialV"]]).head(1))
 
         pastCov = TimeSeries.from_dataframe(
             pd.DataFrame({   
@@ -135,7 +153,7 @@ class PredictClassDarts:
                     #vector is a difference in all 3 coordinates
                 })
         )
-        y_pred_gbm = gbm.predict(n=40,series=target,past_covariates=pastCov,verbose=True)
+        y_pred_gbm = gbm.predict(n=self.OUTPUT_CHUNK_SIZE,series=target,past_covariates=pastCov,verbose=True)
         #y_pred_gbm = y_pred_gbm.transpose()
         
         print(f"Model predict takes {time.time()- predictStart}sec")
@@ -163,5 +181,5 @@ class PredictClassDarts:
     
 
 if __name__ == "__main__":
-    prediction = PredictClassDarts(2,6)
+    prediction = PredictClassDarts(2,2,6)
     prediction.predict()
